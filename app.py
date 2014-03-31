@@ -1,7 +1,9 @@
+import random
+from random import randint
 from flask import Flask, render_template, request, session, \
     flash, redirect, url_for, g
 from flask.ext.sqlalchemy import SQLAlchemy
-import random
+from sqlalchemy import ForeignKey
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///flashcards.db"
@@ -28,6 +30,7 @@ class Answer(db.Model):
 
     answer_id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String, nullable=False)
+    question_id = db.Column(db.Integer, ForeignKey('questions.question_id'))
 
     def __init__(self, description):
         self.description = description
@@ -37,19 +40,33 @@ class Answer(db.Model):
 
 @app.route('/', methods=['GET'])
 def home():
+    question = grab_question()
+    options = generate_options()
+    return render_template('home.html',question=question, options=options)
+
+def grab_question():
     rand = random.randrange(0, db.session.query(Question).count()) 
     question = db.session.query(Question)[rand]
+    return question
+
+def generate_options():
     # make sure answers don't repeat
+    question = grab_question()
     options = []
     while len(options) < 3:
         rand_answer = random.randrange(0, db.session.query(Answer).count())
         answer = db.session.query(Answer)[rand_answer]
         if answer not in options:
             options.append(answer)
-    test = []
-    if options[0] != options[1] and options[0] != options[2] and  options[1] != options[2]:
-        test.append("")
-    return render_template('home.html',question=question, options=options, test=test)
+    options[randint(0,2)] = question
+    return options
+
+@app.route('/answer/<int:answer_id>')
+def answer(answer_id):
+    new_id = answer_id
+    db.session.commit()
+    flash('Completed!')
+    return redirect(url_for('home'))
 
 
 if __name__ == "__main__":

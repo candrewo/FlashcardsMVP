@@ -3,10 +3,7 @@
   <div class="container">
     <p id="question">{{ question }}</p>
     {% for option in options %}
-    <p class="answer">{{option}}</p>
-    {% endfor %}
-    {% for x in test%}
-    <p class="test">{{x}}</p>
+    <p class="answer"><a href="/answer/{{option.answer_id}}"><button type="button" class="btn btn-primary btn-xs answer-button">X</button></a> {{option}}</p>
     {% endfor %}
   </div>
 {% endblock %}
