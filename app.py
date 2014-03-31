@@ -41,7 +41,7 @@ class Answer(db.Model):
 @app.route('/', methods=['GET'])
 def home():
     question = grab_question()
-    options = generate_options()
+    options = generate_options(question)
     return render_template('home.html',question=question, options=options)
 
 def grab_question():
@@ -49,9 +49,8 @@ def grab_question():
     question = db.session.query(Question)[rand]
     return question
 
-def generate_options():
+def generate_options(question):
     # make sure answers don't repeat
-    question = grab_question()
     options = []
     while len(options) < 3:
         rand_answer = random.randrange(0, db.session.query(Answer).count())
