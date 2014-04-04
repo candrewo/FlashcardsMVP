@@ -17,9 +17,6 @@ Feature: confirming that user can see questions and answers, submit, and receive
         And I click a button
         Then I should see a message
 
-    Scenario: check to see if one answer matches the id of the question
-    	When I go to the homepage
-    	Then I should see a question
-    	And I should see three options
-    	And one option should be the answer to the question
-
+    Scenario: check that when I click the next button a new question displays
+        When I click the next question button
+        Then I go to the homepage

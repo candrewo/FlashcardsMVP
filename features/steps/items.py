@@ -27,3 +27,14 @@ def step_impl(context):
 def step_impl(context):
     br = context.browser
     assert br.find_element_by_class_name('flash-answer')
+
+@when(u'I click the next question button')
+def step_impl(context):
+    br = context.browser
+    br.find_element_by_class_name('next').click()
+
+@then(u'I go to the homepage')
+def step_impl(context):
+    br = context.browser
+    br.get('http://localhost:5000')
+
